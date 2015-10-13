@@ -7,21 +7,20 @@ import Enemy from './components/Enemy';
 var map = new Uint8Array(window.innerWidth * window.innerHeight);
 
 var player = new Player({
-  velocity: 10
+  velocity: 10,
+  radius: 20
 });
+var routes = new Routes(3);
 var enemies = [];
-var routes = new Routes(map, player);
 
-for (var i = 0; i < 30; i++) {
+for (var i = 0; i < 10; i++) {
+  var acceleration = 0.6 + 0.4 * Math.random();
   enemies.push(new Enemy({
-    target: player,
     x: window.innerWidth * Math.random(),
     y: window.innerHeight * Math.random(),
-    velocityX: 50 * Math.random() - 5,
-    velocityY: 50 * Math.random() - 5,
-    friction: 0.7,
-    acceleration: 1 + 3 * Math.random(),
-    rotateSpeed: 2 + 30 * Math.random()
+    friction: Math.random() * 0.3 + 0.5,
+    acceleration: acceleration,
+    rotateSpeed: 0.8 / acceleration
   }));
 }
 
@@ -29,10 +28,13 @@ routes.appendTo(document.body);
 player.appendTo(document.body);
 enemies.forEach(enemy => enemy.appendTo(document.body));
 
+var scale = 1;
+
 function onFrame() {
-  player.onFrame();
-  routes.onFrame();
-  enemies.forEach(enemy => enemy.onFrame());
+  player.onFrame(scale);
+  var pos = player.getRealPos();
+  routes.onFrame(pos, scale);
+  enemies.forEach(enemy => enemy.onFrame(pos, scale));
   requestAnimationFrame(onFrame);
 }
 

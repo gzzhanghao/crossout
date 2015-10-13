@@ -21,8 +21,6 @@ export default class Player extends Component {
     this.style.width = this.style.height = `${this.size}px`;
     this.style.transformOrigin = this.style.webkitTransformOrigin = `0 ${this.size / 2}px 0`;
     this.transform(`translate(${this.x + this.radius - this.size / 2}px, ${this.y - this.size / 2}px)`);
-
-    Trigonometric.init(this.velocity);
   }
 
   rotate(angle) {
@@ -46,8 +44,8 @@ export default class Player extends Component {
     this.rotate(180);
   }
 
-  onFrame() {
-    this.rotate(this.velocity);
+  onFrame(scale) {
+    this.rotate(this.velocity * scale);
     this.transform(`translate(${this.x}px, ${this.y}px) translateY(-${this.size / 2}px) rotate(${this.orientation}deg) translateX(${this.radius - this.size / 2}px)`);
   }
 }
