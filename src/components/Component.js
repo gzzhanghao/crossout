@@ -3,9 +3,12 @@ var incubator = document.createElement('div');
 export default class Component {
 
   constructor(template) {
-    incubator.innerHTML = template;
-    this.element = incubator.children[0];
-    this.style = this.element.style;
+    if (typeof template === 'string') {
+      incubator.innerHTML = template;
+      template = incubator.children[0];
+    }
+    this.element = template;
+    this.style = template.style;
   }
 
   appendTo(parent) {
@@ -20,7 +23,14 @@ export default class Component {
     return this.element.querySelectorAll(selector);
   }
 
+  attribute(key, value) {
+    if (!value) {
+      return this.element.getAttribute(key);
+    }
+    this.element.setAttribute(key, value);
+  }
+
   transform(transformation) {
-    this.style.transform = this.style.webkitTransform = transformation;
+    this.style.transform = transformation;
   }
 }

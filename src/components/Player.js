@@ -1,5 +1,4 @@
 import Component from './Component';
-import template from './player/template';
 import Trigonometric from '../utils/Trigonometric';
 
 require('./player/style.less');
@@ -7,7 +6,7 @@ require('./player/style.less');
 export default class Player extends Component {
 
   constructor(options) {
-    super(template);
+    super(document.createElementNS('http://www.w3.org/2000/svg', 'rect'));
 
     options = options || {};
 
@@ -18,9 +17,9 @@ export default class Player extends Component {
     this.velocity = options.velocity || 6;
     this.orientation = options.orientation || 0;
 
-    this.style.width = this.style.height = `${this.size}px`;
-    this.style.transformOrigin = this.style.webkitTransformOrigin = `0 ${this.size / 2}px 0`;
-    this.transform(`translate(${this.x + this.radius - this.size / 2}px, ${this.y - this.size / 2}px)`);
+    this.attribute('class', 'player');
+    this.attribute('width', this.size);
+    this.attribute('height', this.size);
   }
 
   rotate(angle) {
@@ -46,6 +45,6 @@ export default class Player extends Component {
 
   onFrame(scale) {
     this.rotate(this.velocity * scale);
-    this.transform(`translate(${this.x}px, ${this.y}px) translateY(-${this.size / 2}px) rotate(${this.orientation}deg) translateX(${this.radius - this.size / 2}px)`);
+    this.attribute('transform', `translate(${this.x - this.size / 2}, ${this.y - this.size / 2}) rotate(${this.orientation} ${this.size / 2} ${this.size / 2}) translate(${this.radius})`);
   }
 }
