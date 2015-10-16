@@ -10,17 +10,20 @@ export default class Routes extends Component {
     this.gap = gap;
     this.iter = 0;
     this.context = this.element.getContext('2d');
+    this.context.fillStyle = 'red';
     this.element.width = window.innerWidth;
     this.element.height = window.innerHeight;
-    this.context.fillStyle = 'red';
   }
 
   onFrame(pos, scale) {
     if (this.iter++ % (this.gap / scale | 0)) {
       return;
     }
+    this.context.clearRect(pos[0] | 0, pos[1] | 0, 2, 2);
+    this.context.fillRect(pos[0] | 0, pos[1] | 0, 2, 2);
+  }
 
-    this.context.clearRect(pos[0] - 1, pos[1] - 1, 3, 3);
-    this.context.fillRect(pos[0] - 0.5, pos[1] - 0.5, 1.5, 1.5);
+  updatePos(x, y) {
+    this.style.transform = `translate(${x}px, ${y}px)`;
   }
 }

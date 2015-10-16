@@ -1,13 +1,8 @@
-import Component from './Component';
 import Trigonometric from '../utils/Trigonometric';
 
-require('./enemy/style.less');
-
-export default class Enemy extends Component {
+export default class Enemy {
 
 	constructor(options) {
-		super(document.createElementNS('http://www.w3.org/2000/svg', 'rect'));
-
 		options = options || {};
 
 		this.x = options.x || 0;
@@ -19,14 +14,6 @@ export default class Enemy extends Component {
 		this.orientation = options.orientation || 0;
 		this.rotateSpeed = options.rotateSpeed || 3;
 		this.acceleration = options.acceleration || 1;
-
-		this.windowWidth = window.innerWidth;
-		this.windowHeight = window.innerHeight;
-
-		this.attribute('class', 'enemy');
-		this.attribute('width', this.size);
-		this.attribute('height', this.size);
-		this.attribute('transform', `translate(-${this.size} -${this.size})`);
 	}
 
 	rotate(angle) {
@@ -51,10 +38,6 @@ export default class Enemy extends Component {
 			this.rotate(this.rotateSpeed);
 		} else {
 			this.rotate(-this.rotateSpeed);
-		}
-
-		if (this.x > - this.size && this.x < this.windowWidth + this.size && this.y > - this.size && this.y < this.windowHeight + this.size) {
-			this.attribute('transform', `translate(${this.x}, ${this.y}) rotate(${this.orientation} 0 0)`)
 		}
 	}
 }

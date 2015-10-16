@@ -1,22 +1,10 @@
 require('./styles/main.less');
 
-import Player from './components/Player';
+import Player from './models/Player';
+import Enemy from './models/Enemy';
+import Scene from './components/Scene';
 import Routes from './components/Routes';
-import Enemy from './components/Enemy';
 import Events from './utils/Events';
-
-// @todo move these elements into component
-var container = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-document.body.appendChild(container);
-
-var fpsCounter = document.createElement('div');
-document.body.appendChild(fpsCounter);
-
-container.style.position = 'absolute';
-container.style.left = 0;
-container.style.top = 0;
-container.setAttribute('width', window.innerWidth.toString());
-container.setAttribute('height', window.innerHeight.toString());
 
 var player = new Player({
   x: window.innerWidth / 2,
@@ -24,36 +12,44 @@ var player = new Player({
   velocity: 10,
   radius: 20
 });
-var routes = new Routes(3);
-var enemies = [];
 
+var enemies = [];
 for (var i = 0; i < 15; i++) {
   var acceleration = 1 + 0.4 * Math.random();
-  var enemy = new Enemy({
+  enemies.push(new Enemy({
     x: player.x + Math.cos(24 * i / 180 * Math.PI) * 50,
     y: player.y + Math.sin(24 * i / 180 * Math.PI) * 50,
     orientation: 24 * i,
     friction: Math.random() * 0.3 + 0.5,
     acceleration: acceleration,
     rotateSpeed: 1.5 / acceleration
-  });
-  enemy.appendTo(container);
-  enemies.push(enemy);
+  }));
 }
 
+var routes = new Routes(3);
 routes.appendTo(document.body);
-player.appendTo(container);
+
+var scene = new Scene();
+scene.appendTo(document.body);
 
 var scale = 1;
-var lastTime = Date.now();
-var frame = 0;
+var scenePos = [0, 0];
 
 function onFrame() {
-  fpsCounter.innerText = ++frame / (Date.now() - lastTime) * 1000;
   player.onFrame(scale);
+
   var pos = player.getRealPos();
-  routes.onFrame(pos, scale);
+
   enemies.forEach(enemy => enemy.onFrame(pos, scale));
+  routes.onFrame(pos, scale);
+  scene.onFrame(player, enemies);
+
+  scenePos[0] += window.innerWidth * Math.pow(2 * (pos[0] - scenePos[0]) / window.innerWidth - 1, 3);
+  scenePos[1] += window.innerHeight * Math.pow(2 * (pos[1] - scenePos[1]) / window.innerHeight - 1, 3);
+
+  scene.updatePos(-scenePos[0], -scenePos[1]);
+  routes.updatePos(-scenePos[0], -scenePos[1]);
+
   requestAnimationFrame(onFrame);
 }
 

@@ -15,21 +15,6 @@ export default class Component {
     parent.appendChild(this.element);
   }
 
-  query(selector) {
-    return this.element.querySelector(selector);
-  }
-
-  queryAll(selector) {
-    return this.element.querySelectorAll(selector);
-  }
-
-  attribute(key, value) {
-    if (!value) {
-      return this.element.getAttribute(key);
-    }
-    this.element.setAttribute(key, value);
-  }
-
   transform(transformation) {
     this.style.transform = transformation;
   }

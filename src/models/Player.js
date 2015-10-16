@@ -1,12 +1,8 @@
-import Component from './Component';
 import Trigonometric from '../utils/Trigonometric';
 
-require('./player/style.less');
-
-export default class Player extends Component {
+export default class Player {
 
   constructor(options) {
-    super(document.createElementNS('http://www.w3.org/2000/svg', 'rect'));
 
     options = options || {};
 
@@ -16,10 +12,6 @@ export default class Player extends Component {
     this.radius = options.radius || 30;
     this.velocity = options.velocity || 6;
     this.orientation = options.orientation || 0;
-
-    this.attribute('class', 'player');
-    this.attribute('width', this.size);
-    this.attribute('height', this.size);
   }
 
   rotate(angle) {
@@ -45,6 +37,5 @@ export default class Player extends Component {
 
   onFrame(scale) {
     this.rotate(this.velocity * scale);
-    this.attribute('transform', `translate(${this.x - this.size / 2}, ${this.y - this.size / 2}) rotate(${this.orientation} ${this.size / 2} ${this.size / 2}) translate(${this.radius})`);
   }
 }
