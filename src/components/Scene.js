@@ -1,40 +1,34 @@
+import assign from 'object-assign';
 import Component from './Component';
 import template from './scene/template';
+import Paths from './Paths';
+import Characters from './Characters';
 
 require('./scene/style.less');
 
+var defaults = {
+	width: window.innerWidth,
+	height: window.innerHeight
+};
+
 export default class Scene extends Component {
 
-	constructor() {
+	constructor(options) {
 		super(template);
-		this.context = this.element.getContext('2d');
-		this.scenePos = [0, 0];
-		this.width = this.element.width = window.innerWidth / 2 * 3;
-		this.height = this.element.height = window.innerHeight / 2 * 3;
+
+		assign(this, options, defaults);
+
+		this.position = [0, 0];
+		this.paths = new Paths;
+		this.characters = new Characters;
+		this.paths.appendTo(this.element);
+		this.characters.appendTo(this.element);
 	}
 
-	onFrame(player, enemies, deltaPos) {
-		this.context.clearRect(0, 0, this.width, this.height);
-
-		var playerPos = player.getRealPos();
-
-		this.scenePos[0] += deltaPos[0];
-		this.scenePos[1] += deltaPos[1];
-
-		this.context.fillStyle = 'red';
-		this.context.fillRect(
-			playerPos[0] - player.size / 2 - this.scenePos[0] | 0,
-			playerPos[1] - player.size / 2 - this.scenePos[1] | 0,
-			player.size, player.size
-		);
-
-		this.context.fillStyle = 'blue';
-		enemies.forEach(enemy =>
-			this.context.fillRect(
-				enemy.x - enemy.size / 2 - this.scenePos[0] | 0,
-				enemy.y - enemy.size / 2 - this.scenePos[1] | 0,
-				enemy.size, enemy.size
-			)
-		);
+	onFrame(player, enemies) {
+		this.position[0] += this.width * Math.pow(2 * (player.x - this.position[0]) / this.width, 3);
+		this.position[1] += this.height * Math.pow(2 * (player.y - this.position[1]) / this.height, 3);
+		this.characters.onFrame(this.position, player, enemies);
+		this.paths.onFrame(this.position, player);
 	}
 }

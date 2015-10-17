@@ -1,28 +1,31 @@
+import assign from 'object-assign';
 import Trigonometric from '../utils/Trigonometric';
+
+var defaults = {
+	x: 0, y: 0,
+	size: 8,
+	friction: 0.7,
+	velocityX: 0,
+	velocityY: 0,
+	orientation: 0,
+	rotateSpeed: 1,
+	acceleration: 1
+};
 
 export default class Enemy {
 
 	constructor(options) {
-		options = options || {};
-
-		this.x = options.x || 0;
-		this.y = options.y || 0;
-		this.size = options.size || 8;
-		this.friction = options.friction || 0.3;
-		this.velocityX = options.velocityX || 0;
-		this.velocityY = options.velocityY || 0;
-		this.orientation = options.orientation || 0;
-		this.rotateSpeed = options.rotateSpeed || 3;
-		this.acceleration = options.acceleration || 1;
+		assign(this, defaults, options);
 	}
 
 	rotate(angle) {
 		this.orientation = (this.orientation + angle + 360) % 360;
 	}
 
-	onFrame(target, scale) {
-		this.x += this.velocityX * scale;
-		this.y += this.velocityY * scale;
+	onFrame(target) {
+
+		this.x += this.velocityX;
+		this.y += this.velocityY;
 
 		var sin = Trigonometric.sin(this.orientation);
 		var cos = Trigonometric.cos(this.orientation);
@@ -30,7 +33,7 @@ export default class Enemy {
 		this.velocityY = this.friction * this.velocityY + sin * this.acceleration;
 		this.velocityX = this.friction * this.velocityX + cos * this.acceleration;
 
-		var targetOrientation = Math.atan2(target[1] - this.y, target[0] - this.x) * 180 / Math.PI | 0;
+		var targetOrientation = Math.atan2(target.y - this.y, target.x - this.x) * 180 / Math.PI | 0;
 		var deltaOrientation = (this.orientation - targetOrientation + 360) % 360;
 		if (deltaOrientation < this.rotateSpeed || 360 < this.rotateSpeed + deltaOrientation) {
 			this.orientation = targetOrientation;

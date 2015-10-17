@@ -21,5 +21,8 @@
     "less-loader": "^2.2.1",
     "style-loader": "^0.12.4",
     "webpack": "^1.12.2"
+  },
+  "dependencies": {
+    "object-assign": "^4.0.1"
   }
 }

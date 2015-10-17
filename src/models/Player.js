@@ -1,49 +1,44 @@
+import assign from 'object-assign'
 import Trigonometric from '../utils/Trigonometric';
+
+var defaults = {
+  centerX: 0,
+  centerY: 0,
+  size: 10,
+  radius: 30,
+  velocity: 10,
+  orientation: 0
+};
 
 export default class Player {
 
   constructor(options) {
-
-    options = options || {};
-
-    this.x = options.x || 100;
-    this.y = options.y || 100;
-    this.size = options.size || 10;
-    this.radius = options.radius || 30;
-    this.velocity = options.velocity || 6;
-    this.orientation = options.orientation || 0;
-
-    this.paths = [];
+    assign(this, defaults, options);
+    this.paths = [{ orientation: 0, centerX: 0, centerY: 0, velocity: - this.velocity }];
   }
 
   rotate(angle) {
-    this.orientation = (this.orientation + angle) % 360;
-    if (this.orientation < 0) {
-      this.orientation += 360;
-    }
-  }
-
-  getRealPos() {
-    return [
-      this.x + this.radius * Trigonometric.cos(this.orientation),
-      this.y + this.radius * Trigonometric.sin(this.orientation)
-    ];
+    this.orientation = (this.orientation + angle + 360) % 360;
   }
 
   turn() {
     this.velocity = -this.velocity;
-    this.x += Trigonometric.cos(this.orientation) * this.radius * 2;
-    this.y += Trigonometric.sin(this.orientation) * this.radius * 2;
+    this.centerX += Trigonometric.cos(this.orientation) * this.radius * 2;
+    this.centerY += Trigonometric.sin(this.orientation) * this.radius * 2;
     this.rotate(180);
     this.paths.push({
-      x: this.x,
-      y: this.y,
+      centerX: this.centerX,
+      centerY: this.centerY,
       velocity: this.velocity,
       orientation: this.orientation
     });
   }
 
-  onFrame(scale) {
-    this.rotate(this.velocity * scale);
+  onFrame() {
+    this.rotate(this.velocity);
+    assign(this, {
+      x: this.centerX + this.radius * Trigonometric.cos(this.orientation),
+      y: this.centerY + this.radius * Trigonometric.sin(this.orientation)
+    });
   }
 }
