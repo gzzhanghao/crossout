@@ -16,6 +16,6 @@ export default class Component {
   }
 
   transform(transformation) {
-    this.style.transform = transformation;
+    this.style.transform = this.style.webkitTransform = transformation;
   }
 }

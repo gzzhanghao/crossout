@@ -3,7 +3,7 @@ require('./styles/main.less');
 import Player from './models/Player';
 import Enemy from './models/Enemy';
 import Scene from './components/Scene';
-import Routes from './components/Routes';
+import Routes from './components/Path';
 import Events from './utils/Events';
 
 var player = new Player({
@@ -39,16 +39,16 @@ function onFrame() {
   player.onFrame(scale);
 
   var pos = player.getRealPos();
+  var deltaPos = [
+    window.innerWidth * Math.pow(2 * (pos[0] - scenePos[0]) / window.innerWidth - 1, 3) | 0,
+    window.innerHeight * Math.pow(2 * (pos[1] - scenePos[1]) / window.innerHeight - 1, 3) | 0
+  ];
+  scenePos[0] += deltaPos[0];
+  scenePos[1] += deltaPos[1];
 
   enemies.forEach(enemy => enemy.onFrame(pos, scale));
-  routes.onFrame(pos, scale);
-  scene.onFrame(player, enemies);
-
-  scenePos[0] += window.innerWidth * Math.pow(2 * (pos[0] - scenePos[0]) / window.innerWidth - 1, 3);
-  scenePos[1] += window.innerHeight * Math.pow(2 * (pos[1] - scenePos[1]) / window.innerHeight - 1, 3);
-
-  scene.updatePos(-scenePos[0], -scenePos[1]);
-  routes.updatePos(-scenePos[0], -scenePos[1]);
+  routes.onFrame(pos, scale, deltaPos, player);
+  scene.onFrame(player, enemies, deltaPos);
 
   requestAnimationFrame(onFrame);
 }

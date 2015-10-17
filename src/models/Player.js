@@ -12,6 +12,8 @@ export default class Player {
     this.radius = options.radius || 30;
     this.velocity = options.velocity || 6;
     this.orientation = options.orientation || 0;
+
+    this.paths = [];
   }
 
   rotate(angle) {
@@ -33,6 +35,12 @@ export default class Player {
     this.x += Trigonometric.cos(this.orientation) * this.radius * 2;
     this.y += Trigonometric.sin(this.orientation) * this.radius * 2;
     this.rotate(180);
+    this.paths.push({
+      x: this.x,
+      y: this.y,
+      velocity: this.velocity,
+      orientation: this.orientation
+    });
   }
 
   onFrame(scale) {
