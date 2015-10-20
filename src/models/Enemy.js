@@ -15,6 +15,7 @@ var defaults = {
 export default class Enemy {
 
 	constructor(options) {
+		this.startTime = Date.now();
 		assign(this, defaults, options);
 	}
 
@@ -26,6 +27,16 @@ export default class Enemy {
 
 		this.x += this.velocityX;
 		this.y += this.velocityY;
+
+		//if (Math.abs(target.x - this.x) < 5 && Math.abs(target.y - this.y) < 5) {
+		//	var time = (Date.now() - this.startTime) / 1000 | 0;
+		//	requestAnimationFrame(function () {
+		//		if (confirm(`你坚持了 ${time / 60 | 0}min ${time % 60}s，重试？`)) {
+		//			location.href = location.href;
+		//		}
+		//	});
+		//	return true;
+		//}
 
 		var sin = Trigonometric.sin(this.orientation);
 		var cos = Trigonometric.cos(this.orientation);

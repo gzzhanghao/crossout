@@ -12,11 +12,13 @@ var scene = new Scene();
 function onFrame () {
 
   player.onFrame();
-  enemyManager.onFrame(player);
+  var stop = enemyManager.onFrame(player);
 
   scene.onFrame(player, enemyManager.enemies);
 
-  requestAnimationFrame(onFrame);
+  if (!stop) {
+    requestAnimationFrame(onFrame);
+  }
 }
 
 function activate (event) {
